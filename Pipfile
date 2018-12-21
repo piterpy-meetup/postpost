@@ -1,0 +1,12 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "==2.1.4"
+wemake-python-styleguide = "==0.6.0"
+
+[requires]
+python_version = "3.6"
