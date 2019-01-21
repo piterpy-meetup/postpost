@@ -5,8 +5,9 @@ from api.models import PlatformPost
 
 class Publication(models.Model):
     """
-    Model for basic post. Text and picture may be override by each PlatformPost
+    Model for basic post. Text and picture may be override by each PlatformPost.
     """
+
     text = models.TextField()
     picture = models.ImageField(blank=True, null=True)
 
@@ -17,11 +18,16 @@ class Publication(models.Model):
 
     @property
     def current_status(self) -> str:
+        """
+        Return current status of publication based on platform posts statuses.
+        """
         statuses = [platform.current_status for platform in self.platform_posts.all()]
         if len(set(statuses)) == 1:
             return statuses[0]
 
-        if PlatformPost.FAILED_STATUS in statuses:  # if one or more platform is failed, post also is failed
+        if PlatformPost.FAILED_STATUS in statuses:
+            # if one or more platform is failed,
+            # post also is failed
             return PlatformPost.FAILED_STATUS
         elif PlatformPost.SENDING_STATUS in statuses:  # same with sending status
             return PlatformPost.SENDING_STATUS

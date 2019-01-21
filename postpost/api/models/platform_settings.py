@@ -34,10 +34,10 @@ class PlatformPost(models.Model):
         related_name='platform_posts',
     )
 
-    platform_type = models.CharField(max_length=32, choices=PLATFORM_TYPES)
+    platform_type = models.CharField(max_length=32, choices=PLATFORM_TYPES)  # noqa: Z432
     text = models.TextField(blank=True)
     current_status = models.CharField(
-        max_length=32,
+        max_length=32,  # noqa: Z432
         choices=PLATFORM_STATUSES,
         default=SCHEDULED_STATUS,
         editable=False,
@@ -50,4 +50,7 @@ class PlatformPost(models.Model):
 
     @property
     def text_for_posting(self) -> str:
+        """
+        Platform post text more specific then publication text, then override if set.
+        """
         return self.text or self.publication.text

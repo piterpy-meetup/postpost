@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "bce8f56541e9b14a7789f524a0411c9ac1658382a39a905ba086a36f17f14eae"
+            "sha256": "17f207b0eee5835e2887216e9bec794449afa4736e2c0c3aa6eeee61c7238eb1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -462,10 +462,10 @@
         },
         "wemake-python-styleguide": {
             "hashes": [
-                "sha256:16c9da9c8a5da9d622d73aa602529569e31aa2a4e11ec4c05b04c181624b7cc0",
-                "sha256:3caad5b23f98b41634fb6e15fc9aa64f4cdd545509730b5e6c8846e4ab94515a"
+                "sha256:068a57f54dde454b089e3c1e685ce632b27f3562d9988141f8073e56082503e1",
+                "sha256:d25ba601c2d172f1efbccbc74793f264e51f9c517a1c4e2292d3106365af81a8"
             ],
-            "version": "==0.6.0"
+            "version": "==0.6.3"
         }
     },
     "develop": {}
