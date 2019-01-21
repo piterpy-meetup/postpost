@@ -1,4 +1,4 @@
-# postpost [![Build Status](https://travis-ci.org/PiterPy-Meetup/postpost.svg?branch=master)](https://travis-ci.org/PiterPy-Meetup/postpost)
+# postpost [![Build Status](https://travis-ci.com/PiterPy-Meetup/postpost.svg?branch=master)](https://travis-ci.com/PiterPy-Meetup/postpost)
 
 metameta. Service for posting to social media
 
