@@ -7,6 +7,12 @@ verify_ssl = true
 [packages]
 django = "==2.1.4"
 wemake-python-styleguide = "==0.6.0"
+django-rest-framework = "*"
+pillow = "*"
+drf-writable-nested = "*"
+celery = "*"
+redis = "*"
+requests = "*"
 
 [requires]
 python_version = "3.6"

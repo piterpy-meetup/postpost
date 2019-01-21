@@ -1,0 +1,1 @@
+from postpost.celery import celery_app
