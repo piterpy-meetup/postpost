@@ -10,7 +10,7 @@ python3.6, redis
 
 `export PYTHONPATH=/full/path/postpost`
 
-`export DJANGO_SETTINGS_MODULE=postpost.settings`
+`export DJANGO_SETTINGS_MODULE=main.settings`
 
 `pipenv run python manage.py migrate`
 
