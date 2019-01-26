@@ -13,6 +13,7 @@ drf-writable-nested = "*"
 celery = "*"
 redis = "*"
 requests = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.6"
