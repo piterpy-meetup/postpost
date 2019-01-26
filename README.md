@@ -16,4 +16,4 @@ python3.6, redis
 
 `pipenv run python manage.py runserver`
 
-`pipenv run celery -A postpost worker -B`
+`pipenv run celery -A main worker -B`
