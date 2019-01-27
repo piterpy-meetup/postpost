@@ -138,7 +138,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
 }
 
 SWAGGER_SETTINGS = {
@@ -149,7 +149,7 @@ SWAGGER_SETTINGS = {
             'authorizationUrl': '/oauth/authorize',
             'tokenUrl': '/oauth/token/',
             'flow': 'password',
-        }
+        },
     },
     'OAUTH2_REDIRECT_URL': '/swagger',
 }
