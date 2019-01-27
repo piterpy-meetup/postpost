@@ -7,6 +7,7 @@ from celery import shared_task
 from celery.schedules import crontab
 from celery.task import periodic_task
 
+from api import vkontakte
 from api.models import PlatformPost
 
 logger = logging.getLogger(__name__)
@@ -37,8 +38,30 @@ def send_post_to_telegram_channel(scheduled_post_id: int):
     post.save()
 
 
+@shared_task
+def send_post_to_vk_group(scheduled_post_id: int):
+    """
+    Celery task which tries to send post to vk and changes status of platform post.
+    """
+    post = PlatformPost.objects.select_related('publication').get(id=scheduled_post_id)
+    vk_response = vkontakte.send_post_to_group(
+        token=os.environ['VK_TOKEN'],
+        group_id=os.environ['VK_GROUP_ID'],
+        api_version=os.environ['VK_API_VERSION'],
+        message=post.text_for_posting,
+        attachments=[],
+    )
+    if vk_response.status_code != requests.codes.ok or 'error' in vk_response.json():
+        logger.error('Error by vk API: %s', vk_response.content)
+        post.current_status = PlatformPost.FAILED_STATUS
+    else:
+        post.current_status = PlatformPost.SUCCESS_STATUS
+    post.save()
+
+
 PLATFORM_TASK_MAPPING = {
     PlatformPost.TELEGRAM_CHANNEL_TYPE: send_post_to_telegram_channel,
+    PlatformPost.VK_GROUP_TYPE: send_post_to_vk_group,
 }
 
 
