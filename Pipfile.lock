@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7cb9ec158649d28880731bc7089c431b35101bf4234eebf2c2012ab369a912ac"
+            "sha256": "78b9022d8ca24fc0836635e107f05a42c88b3622611ebac5533f774c0a18474f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -437,12 +437,25 @@
             ],
             "version": "==2.0.0"
         },
+        "python-dateutil": {
+            "hashes": [
+                "sha256:063df5763652e21de43de7d9e00ccf239f953a832941e37be541614732cdfc93",
+                "sha256:88f9287c0174266bb0d8cedd395cfba9c58e87e5ad86b2ce58859bc11be3cf02"
+            ],
+            "version": "==2.7.5"
+        },
         "pytz": {
             "hashes": [
                 "sha256:32b0891edff07e28efe91284ed9c31e123d84bea3fd98e1f72be2508f43ef8d9",
                 "sha256:d5f05e487007e29e03409f9398d074e158d920d36eb82eaf66fb1136b0c5374c"
             ],
             "version": "==2018.9"
+        },
+        "pyuploadcare": {
+            "hashes": [
+                "sha256:98c3e9de8c37d2afc31eff8f33b23f6f4d787b5dc8672775504d5bf76ba21544"
+            ],
+            "version": "==2.6.0"
         },
         "pyyaml": {
             "hashes": [

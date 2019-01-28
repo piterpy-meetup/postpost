@@ -1,4 +1,5 @@
 from django.db import models
+from pyuploadcare.dj import models as uploadcare_models
 
 from api.models import PlatformPost
 
@@ -9,7 +10,7 @@ class Publication(models.Model):
     """
 
     text = models.TextField()
-    picture = models.ImageField(blank=True, null=True)
+    picture = uploadcare_models.ImageField(blank=True, null=True)
 
     scheduled_at = models.DateTimeField(blank=True, null=True)
 
