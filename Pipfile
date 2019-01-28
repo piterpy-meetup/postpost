@@ -15,6 +15,7 @@ redis = "*"
 requests = "*"
 drf-yasg = "*"
 djangorestframework-camel-case = "*"
+pyuploadcare = "*"
 
 [requires]
 python_version = "3.6"

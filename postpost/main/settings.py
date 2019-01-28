@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'api',
+    'pyuploadcare.dj',
 ]
 
 MIDDLEWARE = [
@@ -130,4 +131,12 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
+}
+
+
+# Secrets
+
+UPLOADCARE = {
+    'pub_key': os.environ['UPLOADCARE_PUBLIC_KEY'],
+    'secret': os.environ['UPLOADCARE_SECRET'],
 }
