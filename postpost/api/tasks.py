@@ -6,7 +6,7 @@ import requests
 from celery import shared_task
 from celery.schedules import crontab
 from celery.task import periodic_task
-
+from twython import Twython
 from api.models import PlatformPost
 
 logger = logging.getLogger(__name__)
@@ -37,8 +37,30 @@ def send_post_to_telegram_channel(scheduled_post_id: int):
     post.save()
 
 
+@shared_task
+def send_post_to_twitter(scheduled_post_id: int):
+    """
+    Celery task which try to send post to twitter and change status of platform post.
+    """
+    post = PlatformPost.objects.select_related('publication').get(id=scheduled_post_id)
+    # FIXME: переменные вынести в конфиг-файл
+    # TODO: перенести работу с отправкой сообщений в внешний модуль из тасок
+    twitter = Twython(os.environ['APP_KEY'],os.environ['APP_SECRET'],
+    	os.environ['APP_KEY'], os.environ['OAUTH_TOKEN_SECRET'])
+	
+	try:
+   		twitter.update_status(status=post.text_for_posting)
+	except TwythonError as e:
+    	logger.error('Error by twitter API: %s', e)
+        post.current_status = PlatformPost.FAILED_STATUS
+    else:
+        post.current_status = PlatformPost.SUCCESS_STATUS
+    post.save()
+
+
 PLATFORM_TASK_MAPPING = {
     PlatformPost.TELEGRAM_CHANNEL_TYPE: send_post_to_telegram_channel,
+    PlatformPost.TWITTER_TYPE: send_post_to_twitter
 }
 
 

@@ -11,6 +11,7 @@ class PlatformPost(models.Model):
     TELEGRAM_CHANNEL_TYPE = 'telegram_channel'
     TELEGRAM_SUPERGROUP_TYPE = 'telegram_supergroup'
     VK_GROUP_TYPE = 'vk_group'
+    TWITTER_TYPE = 'twitter'
     PLATFORM_TYPES = [
         (TELEGRAM_CHANNEL_TYPE, 'Telegram Channel'),
         (TELEGRAM_SUPERGROUP_TYPE, 'Telegram Supergroup (chat)'),
