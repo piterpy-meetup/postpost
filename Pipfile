@@ -6,7 +6,15 @@ verify_ssl = true
 
 [packages]
 django = "==2.1.5"
-wemake-python-styleguide = "==0.6.0"
+wemake-python-styleguide = "==0.6.3"
+django-rest-framework = "*"
+pillow = "*"
+drf-writable-nested = "*"
+celery = "*"
+redis = "*"
+requests = "*"
+drf-yasg = "*"
+djangorestframework-camel-case = "*"
 
 [requires]
 python_version = "3.6"
