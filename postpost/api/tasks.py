@@ -52,7 +52,7 @@ def send_post_to_vk_group(scheduled_post_id: int):
             message=post.text_for_posting,
         )
         post.current_status = PlatformPost.SUCCESS_STATUS
-    except vkontakte.VkApiError as error:
+    except vkontakte.VkAPIError as error:
         logger.error('Error by vk API: %s', str(error))
         post.current_status = PlatformPost.FAILED_STATUS
     post.save()

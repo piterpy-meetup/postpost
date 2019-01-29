@@ -27,14 +27,14 @@ def send_post_to_group(
     """
     Sends post to vk group on behalf of the group itself.
     """
-    vk_api = VkApi(token, api_version)
+    vk_api = VkAPI(token, api_version)
     attachments = []
     if doc_path:
         attachments.append(vk_api.upload_doc(doc_path))
     return vk_api.send_post_to_group_wall(group_id, message, attachments)
 
 
-class VkApiError(Exception):
+class VkAPIError(Exception):
     """
     Vk API base exception.
     """
@@ -44,12 +44,14 @@ class VkApiError(Exception):
         Init error.
         """
         message = '{0} {1} {2}'.format(method, payload, response)
-        super(VkApiError, self).__init__(message)
+        super(VkAPIError, self).__init__(message)
 
 
-class VkApi(object):
+class VkAPI(object):
     """
     Local mini client for vk API.
+
+    Its purpose is to share token, api version, and error handling among the api methods.
     """
 
     def __init__(self, token: str, api_version: float):
@@ -82,7 +84,7 @@ class VkApi(object):
 
         response = requests.post(upload_url, files={'file': open(doc_path, 'rb')})
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkApiError(upload_url, {'file': doc_path}, response.content)
+            raise VkAPIError(upload_url, {'file': doc_path}, response.content)
 
         doc = self._request(
             'docs.save',
@@ -101,7 +103,7 @@ class VkApi(object):
 
         response = requests.post(upload_url, files={'file': open(photo_path, 'rb')})
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkApiError(upload_url, {'file': photo_path}, response.content)
+            raise VkAPIError(upload_url, {'file': photo_path}, response.content)
         uploaded_photo = response.json()
 
         photo = self._request('photos.saveWallPhoto', {
@@ -121,5 +123,5 @@ class VkApi(object):
         })
         response = requests.post(self._url + method, data=payload)
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkApiError(method, payload, response.content)
+            raise VkAPIError(method, payload, response.content)
         return response.json()['response']
