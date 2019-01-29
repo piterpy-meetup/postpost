@@ -49,7 +49,6 @@ def send_post_to_vk_group(scheduled_post_id: int):
         group_id=os.environ['VK_GROUP_ID'],
         api_version=os.environ['VK_API_VERSION'],
         message=post.text_for_posting,
-        attachments=[],
     )
     if vk_response.status_code != requests.codes.ok or 'error' in vk_response.json():
         logger.error('Error by vk API: %s', vk_response.content)

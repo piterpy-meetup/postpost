@@ -1,3 +1,5 @@
+from typing import List
+
 import requests
 
 
@@ -25,63 +27,89 @@ def send_post_to_group(
     """
     Sends post to vk group on behalf of the group itself.
     """
-    payload = {
-        'owner_id': -group_id,
-        'from_group': 1,
-        'message': message,
-        'access_token': token,
-        'v': api_version,
-    }
+    vk_api = VkApi(token, api_version)
     attachments = []
     if doc_path:
-        attachments.append(upload_doc(token, api_version, doc_path))
-    if attachments:
-        payload['attachment'] = ','.join(attachments)
-    response = requests.post('https://api.vk.com/method/wall.post', data=payload)
-    return response
+        attachments.append(vk_api.upload_doc(doc_path))
+    return vk_api.send_post_to_group_wall(group_id, message, attachments)
 
 
-def upload_doc(token: str, api_version: float, file_path: str) -> str:
+class VkApiError(Exception):
     """
-    Uploads and saves doc on the server.
+    Vk API base exception.
     """
-    server = get_doc_upload_server(token, api_version)
-    doc_file = upload_doc_to_server(server, file_path)
-    doc_name = save_doc(token, api_version, doc_file)
-    return doc_name
+    def __init__(self, method: str, payload: dict, response: bytes):
+        message = '{0} {1} {2}'.format(method, payload, response)
+        super(VkApiError, self).__init__(message)
 
 
-def get_doc_upload_server(token: str, api_version: float) -> str:
+class VkApi(object):
     """
-    Returns the server address for document upload.
+    Local mini client for vk API.
     """
-    response = requests.get(
-        'https://api.vk.com/method/docs.getWallUploadServer', params={
-            'access_token': token,
-            'v': api_version,
-        },
-    )
-    return response.json()['response']['upload_url']
 
+    def __init__(self, token: str, api_version: float):
+        """
+        Init client.
+        """
+        self._token = token
+        self._api_version = api_version
+        self._url = 'https://api.vk.com/method/'
 
-def upload_doc_to_server(server: str, file_path: str) -> str:
-    """
-    Uploads doc to the server and returns server's file name.
-    """
-    response = requests.post(server, files={'file': open(file_path, 'rb')})
-    return response.json()['file']
+    def send_post_to_group_wall(self, group_id: int, message: str, attachments: List[str] = None):
+        """
+        Sends post to vk group on behalf of the group itself.
+        """
+        payload = {
+            'owner_id': -group_id,
+            'from_group': 1,
+            'message': message,
+        }
+        if attachments:
+            payload['attachment'] = ','.join(attachments)
+        response = self._request('wall.post', payload=payload)
+        return response
 
+    def upload_doc(self, doc_path: str) -> str:
+        """
+        Uploads and saves doc on the server.
+        """
+        server = self._get_doc_server()
+        doc_file = self._upload_doc_to_server(server, doc_path)
+        doc_name = self._save_doc(doc_file)
+        return doc_name
 
-def save_doc(token: str, api_version: float, doc_file: str) -> str:
-    """
-    Saves the uploaded doc file on the server.
-    """
-    response = requests.post(
-        'https://api.vk.com/method/docs.save', data={
-            'access_token': token,
-            'file': doc_file,
-            'v': api_version,
-        },
-    )
-    doc = response.json()['response']['doc']
-    return 'doc{0}_{1}'.format(doc['owner_id'], doc['id'])
+    def _get_doc_server(self) -> str:
+        """
+        Returns the server address for document upload.
+        """
+        response = self._request('docs.getWallUploadServer')
+        return response['upload_url']
+
+    def _upload_doc_to_server(self, server: str, doc_path: str) -> str:
+        """
+        Uploads doc to the server and returns server's file name.
+        """
+        response = requests.post(server, files={'file': open(doc_path, 'rb')})
+        if response.status_code != requests.codes.ok or 'error' in response.json():
+            raise VkApiError(server, {'file': doc_path}, response.content)
+        return response.json()['file']
+
+    def _save_doc(self, doc_file: str) -> str:
+        """
+        Saves the uploaded doc file on the server.
+        """
+        response = self._request('docs.save', {'file': doc_file})
+        return 'doc{0}_{1}'.format(response['doc']['owner_id'], response['doc']['id'])
+
+    def _request(self, method: str, payload: dict = None):
+        if payload is None:
+            payload = {}
+        payload.update({
+            'v': self._api_version,
+            'access_token': self._token,
+        })
+        response = requests.post(self._url + method, data=payload)
+        if response.status_code != requests.codes.ok or 'error' in response.json():
+            raise VkApiError(method, payload, response.content)
+        return response.json()['response']
