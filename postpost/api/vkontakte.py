@@ -38,7 +38,11 @@ class VkApiError(Exception):
     """
     Vk API base exception.
     """
+
     def __init__(self, method: str, payload: dict, response: bytes):
+        """
+        Init error.
+        """
         message = '{0} {1} {2}'.format(method, payload, response)
         super(VkApiError, self).__init__(message)
 
@@ -74,33 +78,39 @@ class VkApi(object):
         """
         Uploads and saves doc on the server.
         """
-        server = self._get_doc_server()
-        doc_file = self._upload_doc_to_server(server, doc_path)
-        doc_name = self._save_doc(doc_file)
-        return doc_name
+        upload_url = self._request('docs.getWallUploadServer')['upload_url']
 
-    def _get_doc_server(self) -> str:
-        """
-        Returns the server address for document upload.
-        """
-        response = self._request('docs.getWallUploadServer')
-        return response['upload_url']
-
-    def _upload_doc_to_server(self, server: str, doc_path: str) -> str:
-        """
-        Uploads doc to the server and returns server's file name.
-        """
-        response = requests.post(server, files={'file': open(doc_path, 'rb')})
+        response = requests.post(upload_url, files={'file': open(doc_path, 'rb')})
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkApiError(server, {'file': doc_path}, response.content)
-        return response.json()['file']
+            raise VkApiError(upload_url, {'file': doc_path}, response.content)
 
-    def _save_doc(self, doc_file: str) -> str:
+        doc = self._request(
+            'docs.save',
+            {'file': response.json()['file']},
+        )['doc']
+        return 'doc{0}_{1}'.format(doc['owner_id'], doc['id'])
+
+    def upload_photo(self, group_id: int, photo_path: str) -> str:
         """
-        Saves the uploaded doc file on the server.
+        Uploads and saves photo in the community wall photos.
         """
-        response = self._request('docs.save', {'file': doc_file})
-        return 'doc{0}_{1}'.format(response['doc']['owner_id'], response['doc']['id'])
+        upload_url = self._request(
+            'photos.getWallUploadServer',
+            {'group_id': group_id},
+        )['upload_url']
+
+        response = requests.post(upload_url, files={'file': open(photo_path, 'rb')})
+        if response.status_code != requests.codes.ok or 'error' in response.json():
+            raise VkApiError(upload_url, {'file': photo_path}, response.content)
+        uploaded_photo = response.json()
+
+        photo = self._request('photos.saveWallPhoto', {
+            'group_id': group_id,
+            'server': uploaded_photo['server'],
+            'hash': uploaded_photo['hash'],
+            'photo': uploaded_photo['photo'],
+        })[0]
+        return 'photo{0}_{1}'.format(photo['owner_id'], photo['id'])
 
     def _request(self, method: str, payload: dict = None):
         if payload is None:
