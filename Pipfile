@@ -17,6 +17,7 @@ drf-yasg = "*"
 djangorestframework-camel-case = "*"
 django-oauth-toolkit = "*"
 django-cors-middleware = "*"
+pyuploadcare = "*"
 
 [requires]
 python_version = "3.6"

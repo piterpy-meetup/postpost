@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'corsheaders',
     'api',
+    'pyuploadcare.dj',
 ]
 
 MIDDLEWARE = [
@@ -139,6 +140,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+}
+
+
+# Secrets
+
+UPLOADCARE = {
+    'pub_key': os.environ['UPLOADCARE_PUBLIC_KEY'],
+    'secret': os.environ['UPLOADCARE_SECRET'],
 }
 
 SWAGGER_SETTINGS = {
