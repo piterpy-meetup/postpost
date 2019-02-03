@@ -4,7 +4,7 @@ from typing import Sequence
 from django.contrib.auth import models as contrib_models
 from django.utils import timezone
 from drf_writable_nested import WritableNestedModelSerializer
-from oauth2_provider.models import Application, AccessToken, RefreshToken
+from oauth2_provider.models import AccessToken, Application, RefreshToken
 from oauth2_provider.settings import oauth2_settings
 from oauthlib import common
 from rest_framework import serializers
@@ -112,15 +112,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     Check user creds, create User and access/refresh token.
     """
+
     email = serializers.EmailField(
         required=True,
         allow_null=False,
         validators=[
             UniqueValidator(
                 queryset=contrib_models.User.objects.all(),
-                lookup='iexact'
-            )
-        ]
+                lookup='iexact',
+            ),
+        ],
     )
     username = serializers.SlugField(
         required=True,
@@ -129,9 +130,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         validators=[
             UniqueValidator(
                 queryset=contrib_models.User.objects.all(),
-                lookup='iexact'
-            )
-        ]
+                lookup='iexact',
+            ),
+        ],
     )
     password = serializers.CharField(required=True, allow_null=False, write_only=True, min_length=8)
     client_id = serializers.CharField(required=True, allow_null=False, write_only=True)
@@ -171,7 +172,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             scope='',
             expires=expires,
             token=common.generate_token(),
-            application=application
+            application=application,
         )
         access_token.save()
         self._access_token = access_token.token
@@ -180,7 +181,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             user=user,
             token=common.generate_token(),
             application=application,
-            access_token=access_token
+            access_token=access_token,
         )
         refresh_token.save()
         self._refresh_token = refresh_token.token
@@ -189,4 +190,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = contrib_models.User
-        fields = ['id', 'email', 'username', 'password', 'client_id', 'access_token', 'refresh_token']
+        fields = [
+            'id',
+            'email',
+            'username',
+            'password',
+            'client_id',
+            'access_token',
+            'refresh_token',
+        ]
