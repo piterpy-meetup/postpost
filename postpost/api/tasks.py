@@ -49,7 +49,7 @@ def send_post_to_vk_group(scheduled_post_id: int):
             token=os.environ['VK_TOKEN'],
             group_id=os.environ['VK_GROUP_ID'],
             api_version=os.environ['VK_API_VERSION'],
-            message=post.text_for_posting,
+            post=post,
         )
         post.current_status = PlatformPost.SUCCESS_STATUS
     except vkontakte.VkAPIError as error:

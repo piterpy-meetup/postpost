@@ -1,6 +1,8 @@
-from typing import List
+from typing import IO, List
 
 import requests
+
+from api.models import PlatformPost
 
 
 def get_authorization_url(client_id: int, api_version: float) -> str:
@@ -22,16 +24,15 @@ def get_authorization_url(client_id: int, api_version: float) -> str:
 
 
 def send_post_to_group(
-    token: str, group_id: int, api_version: float, message: str, doc_path: str = None,
+    token: str, group_id: int, api_version: float, post: PlatformPost,
 ) -> requests.Response:
     """
     Sends post to vk group on behalf of the group itself.
     """
     vk_api = VkAPI(token, api_version)
     attachments = []
-    if doc_path:
-        attachments.append(vk_api.upload_doc(doc_path))
-    return vk_api.send_post_to_group_wall(group_id, message, attachments)
+    # TODO: Add attachments uploading according to PlatformPost changes
+    return vk_api.send_post_to_group_wall(group_id, post.text_for_posting, attachments)
 
 
 class VkAPIError(Exception):
@@ -76,15 +77,15 @@ class VkAPI(object):
         response = self._request('wall.post', payload=payload)
         return response
 
-    def upload_doc(self, doc_path: str) -> str:
+    def upload_doc(self, doc: IO) -> str:
         """
         Uploads and saves doc on the server.
         """
         upload_url = self._request('docs.getWallUploadServer')['upload_url']
 
-        response = requests.post(upload_url, files={'file': open(doc_path, 'rb')})
+        response = requests.post(upload_url, files={'file': doc})
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkAPIError(upload_url, {'file': doc_path}, response.content)
+            raise VkAPIError(upload_url, {'file': doc}, response.content)
 
         doc = self._request(
             'docs.save',
@@ -92,7 +93,7 @@ class VkAPI(object):
         )['doc']
         return 'doc{0}_{1}'.format(doc['owner_id'], doc['id'])
 
-    def upload_photo(self, group_id: int, photo_path: str) -> str:
+    def upload_photo(self, group_id: int, photo: IO) -> str:
         """
         Uploads and saves photo in the community wall photos.
         """
@@ -101,9 +102,9 @@ class VkAPI(object):
             {'group_id': group_id},
         )['upload_url']
 
-        response = requests.post(upload_url, files={'file': open(photo_path, 'rb')})
+        response = requests.post(upload_url, files={'file': photo})
         if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkAPIError(upload_url, {'file': photo_path}, response.content)
+            raise VkAPIError(upload_url, {'file': photo}, response.content)
         uploaded_photo = response.json()
 
         photo = self._request('photos.saveWallPhoto', {
