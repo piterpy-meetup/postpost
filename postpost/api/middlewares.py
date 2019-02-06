@@ -25,7 +25,7 @@ class GlobalWorkspaceMiddleware(object):
 
         And this method does nothing.
         """
-        return self.get_response()
+        return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         """
