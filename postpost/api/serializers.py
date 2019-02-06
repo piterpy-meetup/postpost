@@ -11,7 +11,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from api import models
-from api.models.workspace_member import ADMIN_ROLE
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
@@ -199,22 +198,4 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'client_id',
             'access_token',
             'refresh_token',
-        ]
-
-
-class WorkspaceSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        workspace = super().create(validated_data)
-        models.WorkspaceMember.objects.create(
-            workspace=workspace,
-            member=self.context['request'].user,
-            role=ADMIN_ROLE,
-        )
-        return workspace
-
-    class Meta(object):
-        model = models.Workspace
-        fields = [
-            'id',
-            'name',
         ]

@@ -1,37 +1,33 @@
-from django.contrib.auth import models as contrib_models
-from rest_framework import viewsets
 from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from api import models, serializers
-from api.permissions import IsWorkspaceMember
 
 
-class WorkspacePublication(viewsets.ModelViewSet):
+class PublicationList(ListCreateAPIView):
     """
-    Workspace publications entity view.
+    Very basic view for Publications objects.
     """
 
-    permission_classes = [IsAuthenticated, IsWorkspaceMember]
+    permission_classes = [IsAuthenticated]
+    queryset = models.Publication.objects.all()
     serializer_class = serializers.PublicationSerializer
 
-    def get_queryset(self):
-        return models.Publication.objects.filter(
-            workspace=self.request.workspace,
-        )
 
+class Publication(RetrieveUpdateDestroyAPIView):
+    """
+    View for get, delete and change publication entity.
+    """
 
-class Workspace(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = serializers.WorkspaceSerializer
-    queryset = models.Workspace.objects.all()
+    queryset = models.Publication.objects.all()
+    serializer_class = serializers.PublicationSerializer
 
 
-class UserRegistration(viewsets.ModelViewSet):
+class UserRegistration(CreateAPIView):
     """
     Register user and generate access/refresh token immediately.
     """
 
     permission_classes = [AllowAny]
     serializer_class = serializers.UserRegistrationSerializer
-    queryset = contrib_models.User.objects.all()
