@@ -39,10 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
+    'oauth2_provider',
+    'corsheaders',
     'api',
+    'pyuploadcare.dj',
 ]
 
 MIDDLEWARE = [
+    'api.middlewares.GlobalWorkspaceMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,4 +135,33 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+
+
+# Secrets
+
+UPLOADCARE = {
+    'pub_key': os.environ['UPLOADCARE_PUBLIC_KEY'],
+    'secret': os.environ['UPLOADCARE_SECRET'],
+}
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'API': {
+            'type': 'oauth2',
+            'authorizationUrl': '/oauth/authorize',
+            'tokenUrl': '/oauth/token/',
+            'flow': 'password',
+        },
+    },
+    'OAUTH2_REDIRECT_URL': '/swagger',
+}
+
+CORS_ORIGIN_ALLOW_ALL = True

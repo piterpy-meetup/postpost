@@ -1,11 +1,11 @@
 import logging
 import os
-from datetime import datetime
 
 import requests
 from celery import shared_task
 from celery.schedules import crontab
 from celery.task import periodic_task
+from django.utils import timezone
 
 from api.models import PlatformPost
 
@@ -49,7 +49,7 @@ def send_scheduled_posts():
     """
     unsent_posts = PlatformPost.objects.filter(
         current_status=PlatformPost.SCHEDULED_STATUS,
-        publication__scheduled_at__lte=datetime.now(),
+        publication__scheduled_at__lte=timezone.now(),
     )
     logger.info('%s unsent platform-specific post found', unsent_posts.count())
     scheduled_posts = list(unsent_posts)  # get sql select before updating

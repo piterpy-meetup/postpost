@@ -1,6 +1,7 @@
 from django.db import models
 
 from api.models import PlatformPost
+from api.models.workspace import Workspace
 
 
 class Publication(models.Model):
@@ -11,6 +12,7 @@ class Publication(models.Model):
     text = models.TextField()
     picture = models.ImageField(blank=True, null=True)
 
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=False)
     scheduled_at = models.DateTimeField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
