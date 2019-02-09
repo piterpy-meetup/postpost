@@ -7,7 +7,7 @@ from celery import shared_task
 from celery.schedules import crontab
 from celery.task import periodic_task
 
-from api import vkontakte
+from api import telegram, vkontakte
 from api.models import PlatformPost
 
 logger = logging.getLogger(__name__)
@@ -20,21 +20,16 @@ def send_post_to_telegram_channel(scheduled_post_id: int):
     """
     post = PlatformPost.objects.select_related('publication').get(id=scheduled_post_id)
     # FIXME: переменные вынести в конфиг-файл
-    # TODO: перенести работу с отправкой сообщений в внешний модуль из тасок
-    telegram_response = requests.post(
-        'https://api.telegram.org/bot{0}/sendMessage'.format(
-            os.environ['BOT_TOKEN'],
-        ),
-        json={
-            'chat_id': os.environ['TELEGRAM_CHANNEL_ID'],
-            'text': post.text_for_posting,
-        },
-    )
-    if telegram_response.status_code != requests.codes.ok:
-        logger.error('Error by telegram API: %s', telegram_response.content)
-        post.current_status = PlatformPost.FAILED_STATUS
-    else:
+    try:
+        telegram.send_post_to_telegram_chat(
+            token=os.environ['BOT_TOKEN'],
+            chat_id=os.environ['TELEGRAM_CHANNEL_ID'],
+            post=post,
+        )
         post.current_status = PlatformPost.SUCCESS_STATUS
+    except requests.HTTPError as error:
+        logger.error('Error by telegram API: %s', str(error))
+        post.current_status = PlatformPost.FAILED_STATUS
     post.save()
 
 
