@@ -35,3 +35,19 @@ class IsWorkspaceMember(permissions.BasePermission):
             member=request.user,
         ).exists()
         return is_workspace_member
+
+
+class IsSuperuser(permissions.BasePermission):
+    """
+    Permission check for manager of app.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Check standard django is_superuser flag :shrug:.
+
+        More info:
+        https://docs.djangoproject.com/en/2.1/ref/contrib/auth/#django.contrib.auth.models.User.is_superuser
+        """
+        is_superuser = request.user.is_authenticated() and request.user.is_superuser
+        return is_superuser
