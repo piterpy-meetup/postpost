@@ -106,6 +106,14 @@ class PublicationSerializer(WritableNestedModelSerializer):
         if len(platform_posts) == 0:
             raise serializers.ValidationError('Must be set one or more platform settings')
 
+    def create(self, validated_data):
+        """
+        Add current workspace from context to data for creating object.
+        """
+        workspace = self.context['request'].workspace
+        validated_data['workspace'] = workspace
+        return super().create(validated_data)
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
