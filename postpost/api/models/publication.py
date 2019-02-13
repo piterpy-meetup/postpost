@@ -1,6 +1,8 @@
 from django.db import models
 from pyuploadcare.dj import models as uploadcare_models
+from rest_framework.request import Request
 
+from api import permissions
 from api.models import PlatformPost
 from api.models.workspace import Workspace
 
@@ -36,3 +38,11 @@ class Publication(models.Model):
             return PlatformPost.SENDING_STATUS
         else:
             return PlatformPost.SUCCESS_STATUS
+
+    @staticmethod
+    def has_read_permission(request: Request) -> bool:
+        return permissions.check_workspace_member(request)
+
+    @staticmethod
+    def has_write_permission(request: Request) -> bool:
+        return permissions.check_workspace_member(request)

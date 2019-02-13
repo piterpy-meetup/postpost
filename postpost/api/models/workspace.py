@@ -1,4 +1,7 @@
 from django.db import models
+from rest_framework.request import Request
+
+from api import permissions
 
 
 class Workspace(models.Model):
@@ -10,3 +13,11 @@ class Workspace(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    @staticmethod
+    def has_list_permission(request: Request) -> bool:
+        return permissions.check_authenticated(request)
+
+    @staticmethod
+    def has_create_permission(request: Request) -> bool:
+        return permissions.check_authenticated(request)

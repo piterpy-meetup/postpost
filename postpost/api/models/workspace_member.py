@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
+from rest_framework.request import Request
 
+from api import permissions
 from api.models.workspace import Workspace
 
 PUBLISHER_ROLE = 'publisher'
@@ -35,6 +37,10 @@ class WorkspaceMember(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False)
+
+    @staticmethod
+    def has_list_permission(request: Request) -> bool:
+        return permissions.check_workspace_member(request)
 
     class Meta(object):
         unique_together = ('member', 'workspace')

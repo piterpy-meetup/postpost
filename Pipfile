@@ -7,10 +7,8 @@ verify_ssl = true
 [packages]
 django = "==2.1.5"
 wemake-python-styleguide = "==0.6.3"
-
 # see https://github.com/wemake-services/wemake-python-styleguide/pull/472#issuecomment-460057878
 flake8 = '==3.6.0'
-
 django-rest-framework = "*"
 pillow = "*"
 drf-writable-nested = "*"
@@ -22,6 +20,7 @@ djangorestframework-camel-case = "*"
 django-oauth-toolkit = "*"
 django-cors-middleware = "*"
 pyuploadcare = "*"
+dry-rest-permissions = "*"
 
 [requires]
 python_version = "3.6"
