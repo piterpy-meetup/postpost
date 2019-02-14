@@ -1,4 +1,5 @@
 from django.db import models
+from typing_extensions import Final
 
 
 class PlatformPost(models.Model):
@@ -8,19 +9,19 @@ class PlatformPost(models.Model):
 
     # Easy for using in filtering without hardcoding database-level constant, like
     # `PlatformPost.objects.filter(platform_type=PlatformPost.VK_GROUP_TYPE))`
-    TELEGRAM_CHANNEL_TYPE = 'telegram_channel'
-    TELEGRAM_SUPERGROUP_TYPE = 'telegram_supergroup'
-    VK_GROUP_TYPE = 'vk_group'
+    TELEGRAM_CHANNEL_TYPE: Final = 'telegram_channel'
+    TELEGRAM_SUPERGROUP_TYPE: Final = 'telegram_supergroup'
+    VK_GROUP_TYPE: Final = 'vk_group'
     PLATFORM_TYPES = [
         (TELEGRAM_CHANNEL_TYPE, 'Telegram Channel'),
         (TELEGRAM_SUPERGROUP_TYPE, 'Telegram Supergroup (chat)'),
         (VK_GROUP_TYPE, 'VK Group (public)'),
     ]
 
-    SCHEDULED_STATUS = 'scheduled'
-    SENDING_STATUS = 'sending'
-    FAILED_STATUS = 'failed'
-    SUCCESS_STATUS = 'success'
+    SCHEDULED_STATUS: Final = 'scheduled'
+    SENDING_STATUS: Final = 'sending'
+    FAILED_STATUS: Final = 'failed'
+    SUCCESS_STATUS: Final = 'success'
     PLATFORM_STATUSES = [
         (SCHEDULED_STATUS, 'Post was scheduled'),
         (SENDING_STATUS, 'Post is sending'),
@@ -53,5 +54,4 @@ class PlatformPost(models.Model):
         """
         Platform post text more specific then publication text, then override if set.
         """
-        text: str = self.text or self.publication.text
-        return text
+        return self.text or self.publication.text

@@ -1,11 +1,10 @@
-from typing import Dict
-
 import requests
 
+from api.custom_types import JSON
 from api.models import PlatformPost
 
 
-def send_post_to_telegram_chat(token: str, chat_id: str, post: PlatformPost) -> Dict[str, str]:
+def send_post_to_telegram_chat(token: str, chat_id: str, post: PlatformPost) -> JSON:
     """
     Sends post to telegram chat.
     """
@@ -33,7 +32,7 @@ class TgAPI(object):
         text: str,
         disable_notification: bool = False,
         disable_web_page_preview: bool = True,
-    ) -> dict:
+    ) -> JSON:
         """
         Sends the text message to the chat.
         """
@@ -46,7 +45,7 @@ class TgAPI(object):
             disable_web_page_preview=disable_web_page_preview,
         )
 
-    def send_photo(self, photo: str, disable_notification: bool = False) -> Dict[str, str]:
+    def send_photo(self, photo: str, disable_notification: bool = False) -> JSON:
         """
         Sends the photo to the chat.
         """
@@ -57,7 +56,7 @@ class TgAPI(object):
             disable_notification=disable_notification,
         )
 
-    def send_animation(self, animation: str, disable_notification: bool = False) -> Dict[str, str]:
+    def send_animation(self, animation: str, disable_notification: bool = False) -> JSON:
         """
         Sends the animation to the chat.
         """
@@ -68,8 +67,8 @@ class TgAPI(object):
             disable_notification=disable_notification,
         )
 
-    def _request(self, method_name: str, **kwargs) -> Dict[str, str]:
+    def _request(self, method_name: str, **kwargs) -> JSON:
         response = requests.post(self._url + method_name, json=kwargs)
         response.raise_for_status()
-        json: Dict[str, str] = response.json()
+        json: JSON = response.json()
         return json
