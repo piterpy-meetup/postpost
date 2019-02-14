@@ -9,7 +9,7 @@ django = "==2.1.5"
 wemake-python-styleguide = "==0.6.3"
 
 # see https://github.com/wemake-services/wemake-python-styleguide/pull/472#issuecomment-460057878
-flake8 = '==3.6.0'
+flake8 = '==3.7.5'
 
 django-rest-framework = "*"
 pillow = "*"
