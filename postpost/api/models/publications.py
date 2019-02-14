@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db import models
 from pyuploadcare.dj import models as uploadcare_models
 
@@ -22,15 +24,15 @@ class Publication(models.Model):
         """
         Return current status of publication based on platform posts statuses.
         """
-        statuses = [platform.current_status for platform in self.platform_posts.all()]
+        statuses: List[str] = [platform.current_status for platform in self.platform_posts.all()]
         if len(set(statuses)) == 1:
             return statuses[0]
 
+        status: str = PlatformPost.SUCCESS_STATUS
         if PlatformPost.FAILED_STATUS in statuses:
             # if one or more platform is failed,
             # post also is failed
-            return PlatformPost.FAILED_STATUS
+            status = PlatformPost.FAILED_STATUS
         elif PlatformPost.SENDING_STATUS in statuses:  # same with sending status
-            return PlatformPost.SENDING_STATUS
-        else:
-            return PlatformPost.SUCCESS_STATUS
+            status = PlatformPost.SENDING_STATUS
+        return status

@@ -53,4 +53,5 @@ class PlatformPost(models.Model):
         """
         Platform post text more specific then publication text, then override if set.
         """
-        return self.text or self.publication.text
+        text: str = self.text or self.publication.text
+        return text

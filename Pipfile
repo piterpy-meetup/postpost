@@ -21,6 +21,7 @@ djangorestframework-camel-case = "*"
 django-oauth-toolkit = "*"
 django-cors-middleware = "*"
 pyuploadcare = "*"
+wemake-python-styleguide = "==0.7.1"
 
 [requires]
 python_version = "3.6"

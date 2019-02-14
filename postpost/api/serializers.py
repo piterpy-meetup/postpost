@@ -58,14 +58,17 @@ class PlatformSettingsRelatedField(serializers.ModelSerializer):
     }
 
     def to_representation(self, platform_settings: models.PlatformPost) -> dict:  # noqa: D102
-        serializer = self.serializers_by_type.get(platform_settings.platform_type)
+        serializer: serializers.ModelSerializer = self.serializers_by_type.get(
+            platform_settings.platform_type,
+        )
         if not serializer:
             raise Exception('Unknown type of platform')
-        return serializer().to_representation(platform_settings)
+        representation: dict = serializer().to_representation(platform_settings)
+        return representation
 
     def to_internal_value(self, native_values: dict) -> models.PlatformPost:  # noqa: D102
         platform_type = native_values.get('platform_type')
-        serializer = self.serializers_by_type.get(platform_type)
+        serializer: serializers.ModelSerializer = self.serializers_by_type.get(platform_type)
         if not serializer:
             raise serializers.ValidationError({'platform_type': 'Unknown type of platform'})
 

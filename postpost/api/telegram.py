@@ -1,9 +1,11 @@
+from typing import Dict
+
 import requests
 
 from api.models import PlatformPost
 
 
-def send_post_to_telegram_chat(token: str, chat_id: str, post: PlatformPost) -> dict:
+def send_post_to_telegram_chat(token: str, chat_id: str, post: PlatformPost) -> Dict[str, str]:
     """
     Sends post to telegram chat.
     """
@@ -44,7 +46,7 @@ class TgAPI(object):
             disable_web_page_preview=disable_web_page_preview,
         )
 
-    def send_photo(self, photo: str, disable_notification: bool = False) -> dict:
+    def send_photo(self, photo: str, disable_notification: bool = False) -> Dict[str, str]:
         """
         Sends the photo to the chat.
         """
@@ -55,7 +57,7 @@ class TgAPI(object):
             disable_notification=disable_notification,
         )
 
-    def send_animation(self, animation: str, disable_notification: bool = False) -> dict:
+    def send_animation(self, animation: str, disable_notification: bool = False) -> Dict[str, str]:
         """
         Sends the animation to the chat.
         """
@@ -66,7 +68,8 @@ class TgAPI(object):
             disable_notification=disable_notification,
         )
 
-    def _request(self, method_name: str, **kwargs) -> dict:
+    def _request(self, method_name: str, **kwargs) -> Dict[str, str]:
         response = requests.post(self._url + method_name, json=kwargs)
         response.raise_for_status()
-        return response.json()
+        json: Dict[str, str] = response.json()
+        return json

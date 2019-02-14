@@ -1,4 +1,4 @@
-from typing import IO, List
+from typing import IO, Any, Dict, List
 
 import requests
 
@@ -14,8 +14,8 @@ def get_authorization_url(client_id: int, api_version: float) -> str:
     in the address bar. This token is required by functions bellow.
     """
     url = (
-        'https://oauth.vk.com/authorize?client_id={client_id}&response_type=token&'
-        'scope=wall,offline,groups,photos,docs&v={api_version}&'
+        'https://oauth.vk.com/authorize?client_id={client_id}&response_type=token&' +
+        'scope=wall,offline,groups,photos,docs&v={api_version}&' +
         'redirect_uri=https://oauth.vk.com/blank.html'
     ).format(
         client_id=client_id, api_version=api_version,
@@ -25,12 +25,12 @@ def get_authorization_url(client_id: int, api_version: float) -> str:
 
 def send_post_to_group(
     token: str, group_id: int, api_version: float, post: PlatformPost,
-) -> requests.Response:
+) -> Dict[str, Any]:
     """
     Sends post to vk group on behalf of the group itself.
     """
     vk_api = VkAPI(token, api_version)
-    attachments = []
+    attachments: List[str] = []
     # TODO: Add attachments uploading according to PlatformPost changes
     return vk_api.send_post_to_group_wall(group_id, post.text_for_posting, attachments)
 
@@ -45,7 +45,7 @@ class VkAPIError(Exception):
         Init error.
         """
         message = '{0} {1} {2}'.format(method, payload, response)
-        super(VkAPIError, self).__init__(message)
+        super().__init__(message)
 
 
 class VkAPI(object):
@@ -63,7 +63,12 @@ class VkAPI(object):
         self._api_version = api_version
         self._url = 'https://api.vk.com/method/'
 
-    def send_post_to_group_wall(self, group_id: int, message: str, attachments: List[str] = None):
+    def send_post_to_group_wall(
+        self,
+        group_id: int,
+        message: str,
+        attachments: List[str] = None,
+    ) -> Dict[str, Any]:
         """
         Sends post to vk group on behalf of the group itself.
         """
@@ -74,24 +79,27 @@ class VkAPI(object):
         }
         if attachments:
             payload['attachment'] = ','.join(attachments)
-        response = self._request('wall.post', payload=payload)
+        response: Dict[str, Any] = self._request(
+            'wall.post',
+            payload=payload,
+        )['response']
         return response
 
     def upload_doc(self, doc: IO) -> str:
         """
         Uploads and saves doc on the server.
         """
-        upload_url = self._request('docs.getWallUploadServer')['upload_url']
+        upload_url = self._request('docs.getWallUploadServer')['response']['upload_url']
 
         response = requests.post(upload_url, files={'file': doc})
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(upload_url, {'file': doc}, response.content)
 
-        doc = self._request(
+        saved_doc = self._request(
             'docs.save',
             {'file': response.json()['file']},
-        )['doc']
-        return 'doc{0}_{1}'.format(doc['owner_id'], doc['id'])
+        )['response']['doc']
+        return 'doc{0}_{1}'.format(saved_doc['owner_id'], saved_doc['id'])
 
     def upload_photo(self, group_id: int, photo: IO) -> str:
         """
@@ -100,22 +108,24 @@ class VkAPI(object):
         upload_url = self._request(
             'photos.getWallUploadServer',
             {'group_id': group_id},
-        )['upload_url']
+        )['response']['upload_url']
 
         response = requests.post(upload_url, files={'file': photo})
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(upload_url, {'file': photo}, response.content)
         uploaded_photo = response.json()
 
-        photo = self._request('photos.saveWallPhoto', {
-            'group_id': group_id,
-            'server': uploaded_photo['server'],
-            'hash': uploaded_photo['hash'],
-            'photo': uploaded_photo['photo'],
-        })[0]
-        return 'photo{0}_{1}'.format(photo['owner_id'], photo['id'])
+        saved_photo: Dict[str, Any] = self._request(
+            'photos.saveWallPhoto', {
+                'group_id': group_id,
+                'server': uploaded_photo['server'],
+                'hash': uploaded_photo['hash'],
+                'photo': uploaded_photo['photo'],
+            },
+        )['response'][0]
+        return 'photo{0}_{1}'.format(saved_photo['owner_id'], saved_photo['id'])
 
-    def _request(self, method: str, payload: dict = None):
+    def _request(self, method: str, payload: dict = None) -> Dict[str, Any]:
         if payload is None:
             payload = {}
         payload.update({
@@ -125,4 +135,5 @@ class VkAPI(object):
         response = requests.post(self._url + method, data=payload)
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(method, payload, response.content)
-        return response.json()['response']
+        json: Dict[str, str] = response.json()
+        return json
