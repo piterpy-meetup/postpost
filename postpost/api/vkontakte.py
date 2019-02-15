@@ -2,8 +2,8 @@ from typing import IO, List, Union
 
 import requests
 
-from api.custom_types import JSON
 from api.models import PlatformPost
+from custom_types import JSON
 
 
 def get_authorization_url(client_id: int, api_version: float) -> str:
@@ -80,17 +80,16 @@ class VkAPI(object):
         }
         if attachments:
             payload['attachment'] = ','.join(attachments)
-        response: JSON = self._request(
+        return self._request(
             'wall.post',
             payload=payload,
-        )['response']
-        return response
+        )
 
     def upload_doc(self, doc: IO[bytes]) -> str:
         """
         Uploads and saves doc on the server.
         """
-        upload_url = self._request('docs.getWallUploadServer')['response']['upload_url']
+        upload_url = self._request('docs.getWallUploadServer')['upload_url']
 
         response = requests.post(upload_url, files={'file': doc})
         if response.status_code != requests.codes.ok or 'error' in response.json():
@@ -99,7 +98,7 @@ class VkAPI(object):
         saved_doc = self._request(
             'docs.save',
             {'file': response.json()['file']},
-        )['response']['doc']
+        )['doc']
         return 'doc{0}_{1}'.format(saved_doc['owner_id'], saved_doc['id'])
 
     def upload_photo(self, group_id: int, photo: IO[bytes]) -> str:
@@ -109,21 +108,21 @@ class VkAPI(object):
         upload_url = self._request(
             'photos.getWallUploadServer',
             {'group_id': group_id},
-        )['response']['upload_url']
+        )['upload_url']
 
         response = requests.post(upload_url, files={'file': photo})
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(upload_url, {'file': photo}, response.content)
         uploaded_photo = response.json()
 
-        saved_photo: JSON = self._request(
+        saved_photo = self._request(
             'photos.saveWallPhoto', {
                 'group_id': group_id,
                 'server': uploaded_photo['server'],
                 'hash': uploaded_photo['hash'],
                 'photo': uploaded_photo['photo'],
             },
-        )['response'][0]
+        )[0]
         return 'photo{0}_{1}'.format(saved_photo['owner_id'], saved_photo['id'])
 
     def _request(self, method: str, payload: JSON = None) -> JSON:
@@ -136,5 +135,5 @@ class VkAPI(object):
         response = requests.post(self._url + method, data=payload)
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(method, payload, response.content)
-        json: JSON = response.json()
+        json: JSON = response.json()['response']
         return json

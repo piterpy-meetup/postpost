@@ -12,7 +12,7 @@ class PlatformPost(models.Model):
     TELEGRAM_CHANNEL_TYPE: Final = 'telegram_channel'
     TELEGRAM_SUPERGROUP_TYPE: Final = 'telegram_supergroup'
     VK_GROUP_TYPE: Final = 'vk_group'
-    PLATFORM_TYPES = [
+    PLATFORM_TYPES: Final = [
         (TELEGRAM_CHANNEL_TYPE, 'Telegram Channel'),
         (TELEGRAM_SUPERGROUP_TYPE, 'Telegram Supergroup (chat)'),
         (VK_GROUP_TYPE, 'VK Group (public)'),
@@ -22,7 +22,7 @@ class PlatformPost(models.Model):
     SENDING_STATUS: Final = 'sending'
     FAILED_STATUS: Final = 'failed'
     SUCCESS_STATUS: Final = 'success'
-    PLATFORM_STATUSES = [
+    PLATFORM_STATUSES: Final = [
         (SCHEDULED_STATUS, 'Post was scheduled'),
         (SENDING_STATUS, 'Post is sending'),
         (FAILED_STATUS, 'Sending was failed'),

@@ -1,7 +1,7 @@
 import requests
 
-from api.custom_types import JSON
 from api.models import PlatformPost
+from custom_types import JSON
 
 
 def send_post_to_telegram_chat(token: str, chat_id: str, post: PlatformPost) -> JSON:

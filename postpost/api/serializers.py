@@ -11,7 +11,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from api import models
-from api.custom_types import JSON
+from custom_types import JSON
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
@@ -64,7 +64,7 @@ class PlatformSettingsRelatedField(serializers.ModelSerializer):
         )
         if not serializer:
             raise Exception('Unknown type of platform')
-        representation: Dict[str, str] = serializer().to_representation(platform_settings)
+        representation: JSON = serializer().to_representation(platform_settings)
         return representation
 
     def to_internal_value(self, native_values: JSON) -> models.PlatformPost:  # noqa: D102
