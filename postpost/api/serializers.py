@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Sequence
+from typing import Dict, Sequence
 
 from django.contrib.auth import models as contrib_models
 from django.utils import timezone
@@ -11,6 +11,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from api import models
+from custom_types import JSON
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
@@ -51,19 +52,22 @@ class PlatformSettingsRelatedField(serializers.ModelSerializer):
     Special hack field which on the fly change serializer class depending on platform_type.
     """
 
-    serializers_by_type = {
+    serializers_by_type: Dict[str, serializers.ModelSerializer] = {
         models.PlatformPost.VK_GROUP_TYPE: VKGroupSettingsSerializer,
         models.PlatformPost.TELEGRAM_CHANNEL_TYPE: TelegramChannelSettingsSerializer,
         models.PlatformPost.TELEGRAM_SUPERGROUP_TYPE: TelegramChannelSettingsSerializer,  # FIXME
     }
 
-    def to_representation(self, platform_settings: models.PlatformPost) -> dict:  # noqa: D102
-        serializer = self.serializers_by_type.get(platform_settings.platform_type)
+    def to_representation(self, platform_settings: models.PlatformPost):  # noqa: D102
+        serializer = self.serializers_by_type.get(
+            platform_settings.platform_type,
+        )
         if not serializer:
             raise Exception('Unknown type of platform')
-        return serializer().to_representation(platform_settings)
+        representation: JSON = serializer().to_representation(platform_settings)
+        return representation
 
-    def to_internal_value(self, native_values: dict) -> models.PlatformPost:  # noqa: D102
+    def to_internal_value(self, native_values: JSON) -> models.PlatformPost:  # noqa: D102
         platform_type = native_values.get('platform_type')
         serializer = self.serializers_by_type.get(platform_type)
         if not serializer:

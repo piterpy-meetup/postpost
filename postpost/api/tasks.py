@@ -1,9 +1,11 @@
 import logging
 import os
 from datetime import datetime
+from typing import Dict
 
 import requests
 from celery import shared_task
+from celery.local import Proxy
 from celery.schedules import crontab
 from celery.task import periodic_task
 
@@ -13,7 +15,7 @@ from api.models import PlatformPost
 logger = logging.getLogger(__name__)
 
 
-@shared_task
+@shared_task  # type: ignore
 def send_post_to_telegram_channel(scheduled_post_id: int):
     """
     Celery task which try to send post to telegram and change status of platform post.
@@ -33,7 +35,7 @@ def send_post_to_telegram_channel(scheduled_post_id: int):
     post.save()
 
 
-@shared_task
+@shared_task  # type: ignore
 def send_post_to_vk_group(scheduled_post_id: int):
     """
     Celery task which tries to send post to vk and changes status of platform post.
@@ -53,7 +55,7 @@ def send_post_to_vk_group(scheduled_post_id: int):
     post.save()
 
 
-PLATFORM_TASK_MAPPING = {
+PLATFORM_TASK_MAPPING: Dict[str, Proxy] = {
     PlatformPost.TELEGRAM_CHANNEL_TYPE: send_post_to_telegram_channel,
     PlatformPost.VK_GROUP_TYPE: send_post_to_vk_group,
 }
@@ -78,5 +80,6 @@ def send_scheduled_posts():
             logger.error('Unsupported platform type for posting: %s', post.platform_type)
             post.current_status = PlatformPost.FAILED_STATUS
             post.save()
-        logger.info('Add post with id %s to queue', post.id)
-        task.delay(post.id)
+        else:
+            logger.info('Add post with id %s to queue', post.id)
+            task.delay(post.id)
