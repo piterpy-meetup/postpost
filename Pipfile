@@ -9,7 +9,7 @@ flake8 = '==3.6.0'
 mypy = "==0.670"
 
 [packages]
-django = "==2.1.5"
+django = "==2.1.7"
 django-rest-framework = "*"
 pillow = "*"
 drf-writable-nested = "*"
