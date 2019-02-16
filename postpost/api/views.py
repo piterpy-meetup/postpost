@@ -1,7 +1,8 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from api import models, serializers
+from api import filters, models, serializers
 
 
 class PublicationList(ListCreateAPIView):
@@ -12,6 +13,8 @@ class PublicationList(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = models.Publication.objects.all()
     serializer_class = serializers.PublicationSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = filters.PublicationFilterSet
 
 
 class Publication(RetrieveUpdateDestroyAPIView):
