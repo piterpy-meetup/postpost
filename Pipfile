@@ -21,6 +21,7 @@ djangorestframework-camel-case = "*"
 django-oauth-toolkit = "*"
 django-cors-middleware = "*"
 pyuploadcare = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.6"
