@@ -24,4 +24,4 @@ deploy:
   provider: script
   script: docker push $IMAGE_NAME:$IMAGE_TAG
   on:
-    branch: master
+    condition: $TRAVIS_BRANCH =~ ^master|develop$
