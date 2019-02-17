@@ -22,6 +22,8 @@ django-oauth-toolkit = "*"
 django-cors-middleware = "*"
 pyuploadcare = "*"
 django-filter = "*"
+uwsgi = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.6"
