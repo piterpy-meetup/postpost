@@ -14,6 +14,5 @@ COPY Pipfile Pipfile.lock /app/
 RUN pipenv sync
 
 COPY . /app
-RUN pipenv run python $PYTHONPATH/manage.py migrate
 
-CMD pipenv run uwsgi --ini uwsgi.ini --home $(pipenv --venv)
+CMD sh /app/run-app.sh
