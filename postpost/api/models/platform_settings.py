@@ -12,6 +12,17 @@ class PlatformPost(models.Model):
     TELEGRAM_CHANNEL_TYPE: Final = 'telegram_channel'
     TELEGRAM_SUPERGROUP_TYPE: Final = 'telegram_supergroup'
     VK_GROUP_TYPE: Final = 'vk_group'
+
+    # from boger:
+    # I think that in the future we will use two variables for describing
+    # platforms: platform (vk_group, twitter_account, telegram_channel) and
+    # integration (api, ifttt, buffer). Platform variable will be responsible
+    # for platform only, because if you want filter `publication to twitter`
+    # you doesn't care about ifttt or buffer, you want see all twitter
+    # publication.
+    #
+    # Maybe integration type should ruled by PlatformSetting or only on
+    # frontend-side, I'm not sure.
     PLATFORM_TYPES: Final = [
         (TELEGRAM_CHANNEL_TYPE, 'Telegram Channel'),
         (TELEGRAM_SUPERGROUP_TYPE, 'Telegram Supergroup (chat)'),

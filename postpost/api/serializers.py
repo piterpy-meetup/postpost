@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Type
 
 from django.contrib.auth import models as contrib_models
 from django.utils import timezone
@@ -52,7 +52,7 @@ class PlatformSettingsRelatedField(serializers.ModelSerializer):
     Special hack field which on the fly change serializer class depending on platform_type.
     """
 
-    serializers_by_type: Dict[str, serializers.ModelSerializer] = {
+    serializers_by_type: Dict[str, Type[serializers.ModelSerializer]] = {
         models.PlatformPost.VK_GROUP_TYPE: VKGroupSettingsSerializer,
         models.PlatformPost.TELEGRAM_CHANNEL_TYPE: TelegramChannelSettingsSerializer,
         models.PlatformPost.TELEGRAM_SUPERGROUP_TYPE: TelegramChannelSettingsSerializer,  # FIXME
