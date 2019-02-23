@@ -15,9 +15,9 @@ script:
   - 'pipenv run mypy .'
 
 before_deploy:
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - echo $REGISTRY_PASS | docker login -u "$REGISTRY_USER" --password-stdin
   - export IMAGE_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo "dev"; fi`
-  - export IMAGE_NAME="piterpy-meetup/postpost"
+  - export IMAGE_NAME="piterpy/postpost"
   - docker build -t $IMAGE_NAME:$IMAGE_TAG .
 
 deploy:
