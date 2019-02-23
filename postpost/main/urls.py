@@ -17,9 +17,9 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
-    path('oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
