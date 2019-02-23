@@ -155,12 +155,11 @@ SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'API': {
             'type': 'oauth2',
-            'authorizationUrl': '/oauth/authorize',
-            'tokenUrl': '/oauth/token/',
+            'authorizationUrl': '/api/oauth/authorize',
+            'tokenUrl': '/api/oauth/token/',
             'flow': 'password',
         },
     },
-    'OAUTH2_REDIRECT_URL': '/swagger',
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
