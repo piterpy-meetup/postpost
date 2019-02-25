@@ -9,8 +9,8 @@ from celery.local import Proxy
 from celery.schedules import crontab
 from celery.task import periodic_task
 
-from api import telegram, vkontakte
 from api.models import PlatformPost
+from gates import telegram, vkontakte
 
 logger = logging.getLogger(__name__)
 

@@ -91,13 +91,11 @@ class VkAPI(object):
         """
         upload_url = self._request('docs.getWallUploadServer')['upload_url']
 
-        response = requests.post(upload_url, files={'file': doc})
-        if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkAPIError(upload_url, {'file': doc}, response.content)
+        uploaded_doc = self._upload_media(upload_url, doc)
 
         saved_doc = self._request(
             'docs.save',
-            {'file': response.json()['file']},
+            {'file': uploaded_doc['file']},
         )['doc']
         return 'doc{0}_{1}'.format(saved_doc['owner_id'], saved_doc['id'])
 
@@ -110,10 +108,7 @@ class VkAPI(object):
             {'group_id': group_id},
         )['upload_url']
 
-        response = requests.post(upload_url, files={'file': photo})
-        if response.status_code != requests.codes.ok or 'error' in response.json():
-            raise VkAPIError(upload_url, {'file': photo}, response.content)
-        uploaded_photo = response.json()
+        uploaded_photo = self._upload_media(upload_url, photo)
 
         saved_photo = self._request(
             'photos.saveWallPhoto', {
@@ -126,6 +121,9 @@ class VkAPI(object):
         return 'photo{0}_{1}'.format(saved_photo['owner_id'], saved_photo['id'])
 
     def _request(self, method: str, payload: JSON = None) -> JSON:
+        """
+        Sends request to the VK API method with the given payload.
+        """
         if payload is None:
             payload = {}
         payload.update({
@@ -135,5 +133,13 @@ class VkAPI(object):
         response = requests.post(self._url + method, data=payload)
         if response.status_code != requests.codes.ok or 'error' in response.json():
             raise VkAPIError(method, payload, response.content)
-        json: JSON = response.json()['response']
-        return json
+        return response.json()['response']
+
+    def _upload_media(self, upload_url: str, media: IO[bytes]) -> JSON:
+        """
+        Upload media to the VK server.
+        """
+        response = requests.post(upload_url, files={'file': media})
+        if response.status_code != requests.codes.ok or 'error' in response.json():
+            raise VkAPIError(upload_url, {'file': media.name}, response.content)
+        return response.json()
