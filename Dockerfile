@@ -6,7 +6,7 @@ ENV PYTHONPATH=/app/postpost \
     PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=off
 
-RUN apk --no-cache add gcc build-base linux-headers jpeg-dev zlib-dev && \
+RUN apk --no-cache add gcc build-base linux-headers jpeg-dev zlib-dev postgresql-dev musl-dev && \
     pip install pipenv
 
 WORKDIR /app
