@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  api:
+    container_name: postpost_api
+    image: piterpy/postpost:$TAG
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    env_file: .env
+    volumes:
+      - /root/db.sqlite3:/app/postpost/db.sqlite3
+    depends_on:
+      - celery
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    volumes:
+      - redis_data:/data
+
+  celery:
+    image: piterpy/postpost:$TAG
+    command: sh /app/wait-for.sh api:8000 -- pipenv run celery -A main worker -B
+    depends_on:
+      - redis
+
+  frontend:
+    container_name: postpost_frontend
+    image: piterpy/postpost-frontend:$TAG
+    restart: unless-stopped
+    ports:
+      - 8043:8043
+    env_file: .env
+
+  watchtower:
+    image: v2tec/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+
+volumes:
+  redis_data:
