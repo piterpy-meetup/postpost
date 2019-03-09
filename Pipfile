@@ -25,6 +25,7 @@ django-filter = "*"
 uwsgi = "*"
 typing-extensions = "*"
 psycopg2-binary = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.6"
