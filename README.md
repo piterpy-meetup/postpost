@@ -1,4 +1,4 @@
-# postpost [![Build Status](https://travis-ci.com/piterpy-meetup/postpost.svg?branch=master)](https://travis-ci.com/piterpy-meetup/postpost)
+# postpost [![Build Status](https://travis-ci.com/piterpy-meetup/postpost.svg?branch=develop)](https://travis-ci.com/piterpy-meetup/postpost)
 
 metameta
 
