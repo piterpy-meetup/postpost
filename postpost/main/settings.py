@@ -175,6 +175,7 @@ SWAGGER_SETTINGS = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 sentry_sdk.init(
-    dsn='https://ee58a2f4d06148e59af5473f2e71ff02@sentry.io/1411606',
+    dsn=os.environ['SENTRY_DSN'],
+    environment=os.environ['SENTRY_ENVIRONMENT'],
     integrations=[DjangoIntegration()],
 )
