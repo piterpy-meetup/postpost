@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # noqa: Z221
 
@@ -170,3 +173,8 @@ SWAGGER_SETTINGS = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+sentry_sdk.init(
+    dsn='https://ee58a2f4d06148e59af5473f2e71ff02@sentry.io/1411606',
+    integrations=[DjangoIntegration()],
+)
