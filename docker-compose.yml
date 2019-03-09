@@ -24,6 +24,7 @@ services:
     depends_on:
       - redis
       - db
+    env_file: .env
 
   frontend:
     container_name: postpost_frontend
