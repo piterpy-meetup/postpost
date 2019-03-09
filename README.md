@@ -9,6 +9,10 @@ Service for posting to various social medias from one place
 ### Docker-based setup
 Prerequisites: docker-compose, `.env` file in the project root
 
+Specify Docker tag (see [list of tags](https://hub.docker.com/r/piterpy/postpost/tags) on DockerHub):
+
+`export TAG=dev`
+
 Start containers:
 
 `docker-compose up -d`
