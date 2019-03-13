@@ -94,7 +94,7 @@ class PublicationSerializer(WritableNestedModelSerializer):
         fields = [
             'id',
             'text',
-            'picture',
+            'attachments',
             'scheduled_at',
             'current_status',
             'platform_posts',
@@ -108,6 +108,19 @@ class PublicationSerializer(WritableNestedModelSerializer):
         """
         if len(platform_posts) == 0:
             raise serializers.ValidationError('Must be set one or more platform settings')
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for attachments.
+    """
+
+    class Meta(object):
+        model = models.Attachment
+        fields = [
+            'parent_publication',
+            'picture',
+        ]
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
