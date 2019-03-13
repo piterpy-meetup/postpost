@@ -38,7 +38,7 @@ Prerequisites: Python 3.6, `.env` file in the project root, Redis running on por
 
 Add basic user
 
-`python manage.py createsuperuser`
+`pipenv run python manage.py createsuperuser`
 
 ### Usage
 
