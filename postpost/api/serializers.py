@@ -1,8 +1,6 @@
 from datetime import timedelta
 from typing import Dict, Sequence, Type
 
-from api import models
-from custom_types import JSON
 from django.contrib.auth import models as contrib_models
 from django.utils import timezone
 from drf_writable_nested import WritableNestedModelSerializer
@@ -12,6 +10,9 @@ from oauthlib import common
 from pyuploadcare.dj import models as uploadcare_models  # noqa: F401
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+
+from api import models
+from custom_types import JSON
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
