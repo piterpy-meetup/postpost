@@ -9,6 +9,7 @@ from oauth2_provider.settings import oauth2_settings
 from oauthlib import common
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from pyuploadcare.dj import models as uploadcare_models
 
 from api import models
 from custom_types import JSON
@@ -114,7 +115,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
     """
     Serializer for attachments.
     """
-
+    picture = uploadcare_models.ImageField(blank=True, null=True)
     class Meta(object):
         model = models.Attachment
         fields = [
