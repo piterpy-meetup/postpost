@@ -1,18 +1,17 @@
 from datetime import timedelta
 from typing import Dict, Sequence, Type
 
+from api import models
+from custom_types import JSON
 from django.contrib.auth import models as contrib_models
 from django.utils import timezone
 from drf_writable_nested import WritableNestedModelSerializer
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 from oauth2_provider.settings import oauth2_settings
 from oauthlib import common
+from pyuploadcare.dj import models as uploadcare_models  # noqa: F401
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from pyuploadcare.dj import models as uploadcare_models
-
-from api import models
-from custom_types import JSON
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
@@ -115,7 +114,9 @@ class AttachmentSerializer(serializers.ModelSerializer):
     """
     Serializer for attachments.
     """
+
     picture = uploadcare_models.ImageField(blank=True, null=True)
+
     class Meta(object):
         model = models.Attachment
         fields = [

@@ -1,5 +1,4 @@
 from django.db import models
-from pyuploadcare.dj import models as uploadcare_models
 
 from api.models import PlatformPost
 
