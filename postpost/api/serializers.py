@@ -6,13 +6,13 @@ from django.utils import timezone
 from drf_writable_nested import WritableNestedModelSerializer
 from oauth2_provider.models import AccessToken, Application, RefreshToken
 from oauth2_provider.settings import oauth2_settings
-from oauthlib import common
+from oauthlib import common  # noqa: F401
 from pyuploadcare.dj import models as uploadcare_models  # noqa: F401
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+from rest_framework import serializers  # noqa: F401
+from rest_framework.validators import UniqueValidator  # noqa: F401
 
-from api import models
-from custom_types import JSON
+from api import models  # noqa: F401
+from custom_types import JSON  # noqa: F401
 
 
 class VKGroupSettingsSerializer(serializers.ModelSerializer):
