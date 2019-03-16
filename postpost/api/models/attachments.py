@@ -11,5 +11,5 @@ class Attachment(models.Model):
         'Publication',
         on_delete=models.CASCADE,
         related_name='attachments',
-        )
-    picture = uploadcare_models.ImageField(blank=True, null=True)
+    )
+    attachment = uploadcare_models.ImageField(blank=True, null=True)

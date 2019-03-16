@@ -2,7 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 
 from api import models
 from api.serializers.platform_settings_field import PlatformSettingsRelatedField
-
+from api.serializers.attachment import AttachmentSerializer
 
 class PublicationSerializer(WritableNestedModelSerializer):
     """
@@ -10,6 +10,10 @@ class PublicationSerializer(WritableNestedModelSerializer):
     """
 
     platform_posts = PlatformSettingsRelatedField(
+        many=True,
+    )
+
+    attachments = AttachmentSerializer(
         many=True,
     )
 
