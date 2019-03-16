@@ -81,12 +81,28 @@ class PlatformSettingsRelatedField(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AttachmentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for attachments.
+    """
+
+    class Meta(object):
+        model = models.Attachment
+        fields = [
+            'attachment',
+        ]
+
+
 class PublicationSerializer(WritableNestedModelSerializer):
     """
     Serializer for publication with platform posts field.
     """
 
     platform_posts = PlatformSettingsRelatedField(
+        many=True,
+    )
+
+    attachments = AttachmentSerializer(
         many=True,
     )
 
@@ -109,21 +125,6 @@ class PublicationSerializer(WritableNestedModelSerializer):
         """
         if len(platform_posts) == 0:
             raise serializers.ValidationError('Must be set one or more platform settings')
-
-
-class AttachmentSerializer(serializers.ModelSerializer):
-    """
-    Serializer for attachments.
-    """
-
-    attachment = uploadcare_models.ImageField(blank=True, null=True)
-
-    class Meta(object):
-        model = models.Attachment
-        fields = [
-            'parent_publication',
-            'attachment',
-        ]
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
