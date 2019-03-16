@@ -1,8 +1,9 @@
 from drf_writable_nested import WritableNestedModelSerializer
 
 from api import models
-from api.serializers.platform_settings_field import PlatformSettingsRelatedField
 from api.serializers.attachment import AttachmentSerializer
+from api.serializers.platform_settings_field import PlatformSettingsRelatedField
+
 
 class PublicationSerializer(WritableNestedModelSerializer):
     """
