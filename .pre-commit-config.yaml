@@ -1,0 +1,13 @@
+---
+
+- repo: local
+  hooks:
+    - id: isort
+      name: isort
+      entry: isort
+      language: system
+    - id: flake8
+      name: flake8
+      entry: flake8
+      exclude: '.pre-commit-config.yaml'
+      language: system
