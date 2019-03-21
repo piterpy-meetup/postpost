@@ -30,5 +30,5 @@ these params:
  - Grant type: `Resource owner password based`
  - Name: e.g. `frontend`
 
-Congrats! Now, there your [swagger](http://localhost:8000/swagger) and [redoc](http://localhost:8000/redoc)
+Congrats! Now, there are your [swagger](http://localhost:8000/api/swagger) and [redoc](http://localhost:8000/api/redoc)
 
