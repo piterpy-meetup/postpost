@@ -1,3 +1,5 @@
+# flake8: noqa
+
 """
 Django settings for main project.
 
@@ -12,8 +14,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # noqa: Z221
@@ -151,10 +152,9 @@ REST_FRAMEWORK = {
 
 
 # Secrets
-
 UPLOADCARE = {
-    'pub_key': os.environ['UPLOADCARE_PUBLIC_KEY'],
-    'secret': os.environ['UPLOADCARE_SECRET'],
+    'pub_key': config('UPLOADCARE_PUBLIC_KEY', default=1),
+    'secret': config('UPLOADCARE_SECRET', default=1),
 }
 
 SWAGGER_SETTINGS = {
@@ -171,8 +171,5 @@ SWAGGER_SETTINGS = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-sentry_sdk.init(
-    dsn=os.environ['SENTRY_DSN'],
-    environment=os.environ['SENTRY_ENVIRONMENT'],
-    integrations=[DjangoIntegration()],
-)
+SENTRY_DSN = config('SENTRY_DSN', default=None)
+SENTRY_ENVIRONMENT = config('SENTRY_ENVIRONMENT', default=None)
