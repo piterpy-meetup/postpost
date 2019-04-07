@@ -14,5 +14,6 @@
     - id: mypy
       name: mypy
       entry: 'pipenv run mypy .'
+      types: [python]
       pass_filenames: false
       language: system
