@@ -10,6 +10,7 @@
       name: flake8
       entry: 'pipenv run flake8'
       exclude: ^.*(?<!\.py)$
+      pass_filenames: false
       language: system
     - id: mypy
       name: mypy

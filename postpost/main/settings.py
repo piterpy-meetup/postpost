@@ -1,5 +1,3 @@
-# flake8: noqa
-
 """
 Django settings for main project.
 
