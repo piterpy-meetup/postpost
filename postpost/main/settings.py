@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 import sentry_sdk
+from decouple import config
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -151,10 +152,9 @@ REST_FRAMEWORK = {
 
 
 # Secrets
-
 UPLOADCARE = {
-    'pub_key': os.environ['UPLOADCARE_PUBLIC_KEY'],
-    'secret': os.environ['UPLOADCARE_SECRET'],
+    'pub_key': config('UPLOADCARE_PUBLIC_KEY', default=1),
+    'secret': config('UPLOADCARE_SECRET', default=1),
 }
 
 SWAGGER_SETTINGS = {
@@ -172,7 +172,7 @@ SWAGGER_SETTINGS = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 sentry_sdk.init(
-    dsn=os.environ['SENTRY_DSN'],
-    environment=os.environ['SENTRY_ENVIRONMENT'],
+    dsn=config('SENTRY_DSN', default=None),
+    environment=config('SENTRY_ENVIRONMENT', default=None),
     integrations=[DjangoIntegration()],
 )
