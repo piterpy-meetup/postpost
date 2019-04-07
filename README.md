@@ -10,7 +10,7 @@ python3.6, redis
 
 `export PYTHONPATH=/full/path/postpost`
 
-Copy environment variables
+Copy environment variables:
 `cp .env.template .env`
 
 Add values to the variables in `.env`, if you have any, like so:
