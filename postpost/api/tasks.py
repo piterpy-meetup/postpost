@@ -1,44 +1,63 @@
 import logging
 import os
 from datetime import datetime
+from typing import Dict
 
 import requests
 from celery import shared_task
+from celery.local import Proxy
 from celery.schedules import crontab
 from celery.task import periodic_task
 
 from api.models import PlatformPost
+from gates import telegram, vkontakte
 
 logger = logging.getLogger(__name__)
 
 
-@shared_task
+@shared_task  # type: ignore
 def send_post_to_telegram_channel(scheduled_post_id: int):
     """
     Celery task which try to send post to telegram and change status of platform post.
     """
     post = PlatformPost.objects.select_related('publication').get(id=scheduled_post_id)
     # FIXME: переменные вынести в конфиг-файл
-    # TODO: перенести работу с отправкой сообщений в внешний модуль из тасок
-    telegram_response = requests.post(
-        'https://api.telegram.org/bot{0}/sendMessage'.format(
-            os.environ['BOT_TOKEN'],
-        ),
-        json={
-            'chat_id': os.environ['TELEGRAM_CHANNEL_ID'],
-            'text': post.text_for_posting,
-        },
-    )
-    if telegram_response.status_code != requests.codes.ok:
-        logger.error('Error by telegram API: %s', telegram_response.content)
-        post.current_status = PlatformPost.FAILED_STATUS
-    else:
+    try:
+        telegram.send_post_to_telegram_chat(
+            token=os.environ['BOT_TOKEN'],
+            chat_id=os.environ['TELEGRAM_CHANNEL_ID'],
+            post=post,
+        )
         post.current_status = PlatformPost.SUCCESS_STATUS
+    except requests.HTTPError as error:
+        logger.error('Error by telegram API: %s', str(error))
+        post.current_status = PlatformPost.FAILED_STATUS
     post.save()
 
 
-PLATFORM_TASK_MAPPING = {
+@shared_task  # type: ignore
+def send_post_to_vk_group(scheduled_post_id: int):
+    """
+    Celery task which tries to send post to vk and changes status of platform post.
+    """
+    post = PlatformPost.objects.select_related('publication').get(id=scheduled_post_id)
+    try:
+        vkontakte.send_post_to_group(
+            token=os.environ['VK_TOKEN'],
+            group_id=os.environ['VK_GROUP_ID'],
+            api_version=os.environ['VK_API_VERSION'],
+            post=post,
+        )
+        post.current_status = PlatformPost.SUCCESS_STATUS
+    except vkontakte.VkAPIError as error:
+        logger.error('Error by vk API: %s', str(error))
+        post.current_status = PlatformPost.FAILED_STATUS
+    post.save()
+
+
+PLATFORM_TASK_MAPPING: Dict[str, Proxy] = {
     PlatformPost.TELEGRAM_CHANNEL_TYPE: send_post_to_telegram_channel,
+    PlatformPost.VK_GROUP_TYPE: send_post_to_vk_group,
 }
 
 
@@ -61,5 +80,6 @@ def send_scheduled_posts():
             logger.error('Unsupported platform type for posting: %s', post.platform_type)
             post.current_status = PlatformPost.FAILED_STATUS
             post.save()
-        logger.info('Add post with id %s to queue', post.id)
-        task.delay(post.id)
+        else:
+            logger.info('Add post with id %s to queue', post.id)
+            task.delay(post.id)

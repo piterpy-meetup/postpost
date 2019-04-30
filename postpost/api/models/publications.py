@@ -9,7 +9,6 @@ class Publication(models.Model):
     """
 
     text = models.TextField()
-    picture = models.ImageField(blank=True, null=True)
 
     scheduled_at = models.DateTimeField(blank=True, null=True)
 

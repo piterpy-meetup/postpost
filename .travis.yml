@@ -2,8 +2,27 @@ language: python
 python:
   - '3.6'
 cache: pip
+
+services:
+  - docker
+
 install:
   - 'pip install pipenv'
-  - 'pipenv sync'
+  - 'pipenv sync --dev'
+
 script:
   - 'pipenv run flake8'
+  - 'pipenv run mypy .'
+
+before_deploy:
+  - echo $REGISTRY_PASS | docker login -u "$REGISTRY_USER" --password-stdin
+  - export IMAGE_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo "dev"; fi`
+  - export IMAGE_NAME="piterpy/postpost"
+  - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+
+deploy:
+  provider: script
+  script: docker push $IMAGE_NAME:$IMAGE_TAG
+  on:
+    condition: $TRAVIS_BRANCH =~ ^master|develop$
+    all_branches: true

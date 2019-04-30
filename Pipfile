@@ -3,10 +3,15 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [dev-packages]
+wemake-python-styleguide = "==0.7.1"
+# see https://github.com/wemake-services/wemake-python-styleguide/pull/472#issuecomment-460057878
+flake8 = '==3.6.0'
+mypy = "==0.701"
+pre-commit = "*"
+python-decouple = "*"
 
 [packages]
-django = "==2.1.5"
-wemake-python-styleguide = "==0.6.3"
+django = "==2.2"
 django-rest-framework = "*"
 pillow = "*"
 drf-writable-nested = "*"
@@ -15,6 +20,14 @@ redis = "*"
 requests = "*"
 drf-yasg = "*"
 djangorestframework-camel-case = "*"
+django-oauth-toolkit = "*"
+django-cors-middleware = "*"
+pyuploadcare = "*"
+django-filter = "*"
+uwsgi = "*"
+typing-extensions = "*"
+psycopg2-binary = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.6"

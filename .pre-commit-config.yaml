@@ -1,0 +1,19 @@
+---
+
+- repo: local
+  hooks:
+    - id: isort
+      name: isort
+      entry: 'pipenv run isort'
+      language: system
+    - id: flake8
+      name: flake8
+      entry: 'pipenv run flake8'
+      pass_filenames: false
+      language: system
+    - id: mypy
+      name: mypy
+      entry: 'pipenv run mypy .'
+      types: [python]
+      pass_filenames: false
+      language: system
