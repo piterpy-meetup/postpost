@@ -11,7 +11,7 @@ pre-commit = "*"
 python-decouple = "*"
 
 [packages]
-django = "==2.2"
+django = "==2.2.3"
 django-rest-framework = "*"
 pillow = "*"
 drf-writable-nested = "*"
