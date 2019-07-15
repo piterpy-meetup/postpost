@@ -6,7 +6,7 @@ verify_ssl = true
 wemake-python-styleguide = "==0.7.1"
 # see https://github.com/wemake-services/wemake-python-styleguide/pull/472#issuecomment-460057878
 flake8 = '==3.6.0'
-mypy = "==0.701"
+mypy = "==0.720"
 pre-commit = "*"
 python-decouple = "*"
 
